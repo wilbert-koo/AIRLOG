@@ -1,0 +1,42 @@
+name: Postman API Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-postman-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure Postman CLI
+        run: |
+          npm install -g @postman/cli
+          postman login --with-api-key ${{ secrets.POSTMANAPI_KEY }}
+
+      - name: Run Postman Collection
+        run: postman collection run "<6d32ae4a-8314-4e99-8d82-985a19c56633>" --environment "<48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415>"
+        env:
+          POSTMAN_API_KEY: ${{ secrets.POSTMANAPI_KEY }}
+
+      # (可选) 生成 Newman 报告
+      - name: Install Newman and HTML reporter
+        run: |
+          npm install -g newman newman-reporter-htmlextra
+      
+      - name: Run with Newman reporter
+        run: |
+          newman run "https://api.getpostman.com/collections/<6d32ae4a-8314-4e99-8d82-985a19c56633>?apikey=${{secrets.POSTMANAPI_KEY}}" \
+          --environment "https://api.getpostman.com/environments/<48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415>?apikey=${{secrets.POSTMANAPI_KEY}}" \
+          --reporters cli,htmlextra \
+          --reporter-htmlextra-export postman-report.html
+      
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-test-report
+          path: postman-report.html
