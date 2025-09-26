@@ -33,12 +33,22 @@ jobs:
           --env-var destinationLocationCode="${{ env.destinationLocationCode }}" \
           --env-var departureDate="${{ env.departureDate }}" \
           --env-var returnDate="${{ env.returnDate }}" \
-          --reporters cli,htmlextra \
-          --reporter-htmlextra-export "postman-report_${{ env.departureDate }}-${{ returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}.html"
+          --delay-request 200 --bail \
+          --reporters cli,json \
+          --reporter-json-export run.json
 
+      # - uses: actions/setup-python@v5
+      #   with: { python-version: "3.11" }
+      # - name: Install Python deps
+      #   run: pip install -r requirements.txt
+      # - name: Ingest to DB
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      #   run: python scripts/ingest_postman_run.py --run-file run.json
+        
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: flight-offers-price_${{ env.departureDate }}-${{ returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}
-          path: postman-report_${{ env.departureDate }}-${{ returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}.html
+          path: run.json
