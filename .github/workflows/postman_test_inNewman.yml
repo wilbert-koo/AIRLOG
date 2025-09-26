@@ -1,0 +1,26 @@
+name: Postman API Tests in Newman
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-postman-tests-in-Newman:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Newman and HTML reporter
+        run: |
+          npm install -g newman newman-reporter-htmlextra
+      
+      - name: Run with Newman reporter
+        run: |
+          newman run "https://api.getpostman.com/collections/<your-collection-id>?apikey=${{secrets.POSTMAN_API_KEY}}" \
+          --environment "https://api.getpostman.com/environments/<your-environment-id>?apikey=${{secrets.POSTMAN_API_KEY}}" \
+          --reporters cli,htmlextra \
+          --reporter-htmlextra-export postman-report.html
+      
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-test-report
+          path: postman-report.html
