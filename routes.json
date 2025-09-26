@@ -1,0 +1,11 @@
+{
+  "provider": "amadeus",
+  "currency": "USD",
+  "adults": 1,
+  "horizon_days": 120,             
+  "los_list": [3, 7, 14, 21],      
+  "cabin_list": ["ECONOMY","PREMIUM_ECONOMY"],
+  "routes": [
+    { "origin": "ONT", "destination": "TPE" }
+  ]
+}
