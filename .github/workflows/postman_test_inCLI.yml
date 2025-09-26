@@ -25,7 +25,7 @@ jobs:
           AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
           AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
         run: |
-          postman collection run "6d32ae4a-8314-4e99-8d82-985a19c56633" \
+          postman collection run "48793988-c7241c38-56ac-4168-a6eb-666b471e90df" \
             --environment "48793988-33f72e9d-e71e-4a14-8fcc-91cc00c21372" \
             --env-var AMADEUS_ID="$AMADEUS_CLIENT_ID" \
             --env-var AMADEUS_SECRET="$AMADEUS_CLIENT_SECRET"
