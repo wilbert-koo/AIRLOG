@@ -34,11 +34,11 @@ jobs:
           --env-var departureDate="${{ env.departureDate }}" \
           --env-var returnDate="${{ env.returnDate }}" \
           --reporters cli,htmlextra \
-          --reporter-htmlextra-export "postman-report_${{ env.departureDate }}_${{ env.originLocationCode }}To${{ env.destinationLocationCode }}.html"
+          --reporter-htmlextra-export "postman-report_${{ env.departureDate }}-${{ returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}.html"
 
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: flight-offers-price_${{ env.departureDate }}_${{ env.originLocationCode }}To${{ env.destinationLocationCode }}
-          path: postman-report_${{ env.departureDate }}_${{ env.originLocationCode }}To${{ env.destinationLocationCode }}.html
+          name: flight-offers-price_${{ env.departureDate }}-${{ returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}
+          path: postman-report_${{ env.departureDate }}-${{ returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}.html
