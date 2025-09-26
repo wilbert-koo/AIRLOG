@@ -1,1 +1,4 @@
+name: Get Flight Offers Price
 
+on:
+  workflow_dispatch:
