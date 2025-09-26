@@ -13,11 +13,11 @@ jobs:
       
       - name: Run with Newman reporter
         run: |
-          newman run "https://api.getpostman.com/collections/6d32ae4a-8314-4e99-8d82-985a19c56633?apikey=${{secrets.POSTMAN_API_KEY}}" \
-          --environment "https://api.getpostman.com/environments/48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415?apikey=${{secrets.POSTMAN_API_KEY}}" \
+          newman run "https://api.getpostman.com/collections/48793988-c7241c38-56ac-4168-a6eb-666b471e90df?apikey=${{secrets.POSTMAN_API_KEY}}" \
+          --environment "https://api.getpostman.com/environments/48793988-33f72e9d-e71e-4a14-8fcc-91cc00c21372?apikey=${{secrets.POSTMAN_API_KEY}}" \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export postman-report.html
-      
+
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
