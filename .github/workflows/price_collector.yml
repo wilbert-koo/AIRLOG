@@ -50,5 +50,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: flight-offers-price_${{ env.departureDate }}-${{ returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}
+          name: flight-offers-price_${{ env.departureDate }}-${{ env.returnDate }}_${{ env.originLocationCode }}-${{ env.destinationLocationCode }}
           path: run.json
