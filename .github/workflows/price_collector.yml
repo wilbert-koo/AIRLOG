@@ -4,32 +4,41 @@ on:
   workflow_dispatch:
 
 jobs:
-  get-flight-offers-price:
+  run-postman-tests-in-Newman:
     runs-on: ubuntu-latest
+    
+    env:
+      departureDate: "2026-01-01"
+      returnDate: "2026-01-31"
+      originLocationCode: "ONT"
+      destinationLocationCode: "TPE"
+      
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Postman CLI
+      - name: Install Newman and HTML reporter
         run: |
-          curl -o- "https://dl-cli.pstmn.io/install/unix.sh" | sh
-          postman --version
-
-      - name: Login Postman
+          npm install -g newman newman-reporter-htmlextra
+      
+      - name: Run with Newman reporter
         env:
           POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
-        run: postman login --with-api-key "$POSTMAN_API_KEY"
-
-      - name: Run Postman Collection
-        env:
           AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
           AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+          
         run: |
-          postman collection run "48793988-6d32ae4a-8314-4e99-8d82-985a19c56633" \
-            --environment "48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415" \
-            --env-var AMADEUS_ID="$AMADEUS_CLIENT_ID" \
-            --env-var AMADEUS_SECRET="$AMADEUS_CLIENT_SECRET" \
-            --env-var departureDate="2026-01-01" \
-            --env-var returnDate="2026-01-31" \
-            --env-var originLocationCode="ONT" \
-            --env-var destinationLocationCode="TPE" \
+          newman run "https://api.getpostman.com/collections/48793988-6d32ae4a-8314-4e99-8d82-985a19c56633?apikey=$POSTMAN_API_KEY" \
+          --environment "https://api.getpostman.com/environments/48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415?apikey=$POSTMAN_API_KEY" \
+          --env-var AMADEUS_ID="$AMADEUS_CLIENT_ID" \
+          --env-var AMADEUS_SECRET="$AMADEUS_CLIENT_SECRET" \
+          --env-var originLocationCode="${{ env.originLocationCode }}" \
+          --env-var destinationLocationCode="${{ env.destinationLocationCode }}" \
+          --env-var departureDate="${{ env.departureDate }}" \
+          --env-var returnDate="${{ env.returnDate }}" \
+          --reporters cli,htmlextra \
+          --reporter-htmlextra-export "postman-report_${{ env.departureDate }}_${{ env.originLocationCode }}To${{ env.destinationLocationCode }}.html"
+
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flight-offers-price_${{ env.departureDate }}_${{ env.originLocationCode }}To${{ env.destinationLocationCode }}
+          path: postman-report_${{ env.departureDate }}_${{ env.originLocationCode }}To${{ env.destinationLocationCode }}.html
