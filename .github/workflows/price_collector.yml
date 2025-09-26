@@ -2,3 +2,34 @@ name: Get Flight Offers Price
 
 on:
   workflow_dispatch:
+
+jobs:
+  get-flight-offers-price:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/unix.sh" | sh
+          postman --version
+
+      - name: Login Postman
+        env:
+          POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+        run: postman login --with-api-key "$POSTMAN_API_KEY"
+
+      - name: Run Postman Collection
+        env:
+          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+        run: |
+          postman collection run "48793988-a04615a3-3bc4-400c-85a3-f87f20b6552f" \
+            --environment "48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415" \
+            --env-var AMADEUS_ID="$AMADEUS_CLIENT_ID" \
+            --env-var AMADEUS_SECRET="$AMADEUS_CLIENT_SECRET" \
+            --env-var departureDate="2026-01-01" \
+            --env-var returnDate="2026-01-31" \
+            --env-var originLocationCode="ONT" \
+            --env-var destinationLocationCode="TPE" \
