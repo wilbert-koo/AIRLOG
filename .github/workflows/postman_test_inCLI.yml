@@ -1,21 +1,31 @@
-name: Postman API Tests
+name: Postman API Tests in CLI
 
 on:
   workflow_dispatch:
 
 jobs:
-  run-postman-tests:
+  run-postman-tests-in-cli:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure Postman CLI
+      - name: Install Postman CLI
         run: |
-          npm install -g @postman/cli
-          postman login --with-api-key ${{ secrets.POSTMANAPI_KEY }}
+          curl -o- "https://dl-cli.pstmn.io/install/unix.sh" | sh
+          postman --version
+
+      - name: Login Postman
+        env:
+          POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+        run: postman login --with-api-key "$POSTMAN_API_KEY"
 
       - name: Run Postman Collection
-        run: postman collection run "6d32ae4a-8314-4e99-8d82-985a19c56633" --environment "48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415"
         env:
-          POSTMANAPI_KEY: ${{ secrets.POSTMANAPI_KEY }}
+          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+        run: |
+          postman collection run "6d32ae4a-8314-4e99-8d82-985a19c56633" \
+            --environment "48793988-96457a37-d3c8-4732-a703-fb2e6d0ad415" \
+            --env-var AMADEUS_CLIENT_ID="$AMADEUS_CLIENT_ID" \
+            --env-var AMADEUS_CLIENT_SECRET="$AMADEUS_CLIENT_SECRET"
