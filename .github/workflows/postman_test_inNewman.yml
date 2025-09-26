@@ -12,9 +12,14 @@ jobs:
           npm install -g newman newman-reporter-htmlextra
       
       - name: Run with Newman reporter
+        env:
+          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
         run: |
           newman run "https://api.getpostman.com/collections/48793988-c7241c38-56ac-4168-a6eb-666b471e90df?apikey=${{secrets.POSTMAN_API_KEY}}" \
           --environment "https://api.getpostman.com/environments/48793988-33f72e9d-e71e-4a14-8fcc-91cc00c21372?apikey=${{secrets.POSTMAN_API_KEY}}" \
+          --env-var AMADEUS_ID="$AMADEUS_CLIENT_ID" \
+          --env-var AMADEUS_SECRET="$AMADEUS_CLIENT_SECRET" \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export postman-report.html
 
