@@ -46,4 +46,11 @@ AIRLOG aims to serve as a **reliable and extensible flight log system** for:
 ---
 
 ## Project Structure (WIP)
-
+* **`.`**
+* **`├─ .github/`**
+* **`│  └─ workflows/`**
+* **`│     └─ price-collector.yml`**
+* **`├─ scripts/`**
+* **`│  └─ collector.py`**
+* **`├─ routes.json`**
+* **`├─ requirements.txt`**
